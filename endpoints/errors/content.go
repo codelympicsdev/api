@@ -22,3 +22,10 @@ func MissingField(w http.ResponseWriter, field string) {
 	w.Header().Add("Content-Type", "application/json")
 	w.Write([]byte(`{"error": "missing_field", "field": "` + field + `"}`))
 }
+
+// NotFound means that the content is not found
+func NotFound(w http.ResponseWriter) {
+	w.WriteHeader(404)
+	w.Header().Add("Content-Type", "application/json")
+	w.Write([]byte(`{"error": "not_found"}`))
+}

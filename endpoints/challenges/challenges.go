@@ -1,4 +1,4 @@
-package user
+package challenges
 
 import (
 	"github.com/codelympicsdev/api/endpoints/auth"

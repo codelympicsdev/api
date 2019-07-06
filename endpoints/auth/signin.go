@@ -16,11 +16,6 @@ type SigninRequest struct {
 	Password string `json:"password"`
 }
 
-// SigninResponse is the response after signing in
-type SigninResponse struct {
-	Token string `json:"token"`
-}
-
 // signin a user
 func signin(w http.ResponseWriter, r *http.Request) {
 	contentType := r.Header.Get("Content-Type")
@@ -57,7 +52,13 @@ func signin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token := auth.NewToken(user, []string{"user"}, "codelympics.dev")
+	var token *auth.Token
+	if user.OTPEnabled {
+		token = auth.NewUnverifiedToken(user, []string{"user"}, "codelympics.dev")
+	} else {
+		token = auth.NewToken(user, []string{"user"}, "codelympics.dev")
+	}
+
 	t, err := token.Sign()
 	if err != nil {
 		log.Println(err.Error())
@@ -65,7 +66,7 @@ func signin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var resp = SignupResponse{
+	var resp = AuthResponse{
 		Token: t,
 	}
 	w.Header().Add("Content-Type", "application/json")

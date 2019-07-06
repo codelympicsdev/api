@@ -3,7 +3,6 @@ package auth
 import (
 	"log"
 	"net/http"
-	"strings"
 
 	"github.com/codelympicsdev/api/auth"
 	"github.com/codelympicsdev/api/endpoints/errors"
@@ -13,19 +12,15 @@ import (
 // TokenValidationMiddleware validates the JWT
 func TokenValidationMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		authorizationHeader := r.Header.Get("Authorization")
-
-		authorizationParts := strings.Split(authorizationHeader, " ")
-
-		if len(authorizationParts) != 2 || authorizationParts[0] != "Bearer" || authorizationParts[1] == "" {
+		token, err := auth.TokenFromHeader(r)
+		if err != nil {
+			log.Println(err)
 			errors.InvalidCredentials(w)
 			return
 		}
 
-		token, err := auth.Validate(authorizationParts[1], auth.Issuer)
-		if err != nil {
-			log.Println(err)
-			errors.InvalidCredentials(w)
+		if token.RequiresUpgrade == true {
+			errors.UnverifiedToken(w)
 			return
 		}
 

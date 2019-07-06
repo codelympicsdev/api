@@ -17,11 +17,6 @@ type SignupRequest struct {
 	Password string `json:"password"`
 }
 
-// SignupResponse is the response after signing up
-type SignupResponse struct {
-	Token string `json:"token"`
-}
-
 // signup a user
 func signup(w http.ResponseWriter, r *http.Request) {
 	contentType := r.Header.Get("Content-Type")
@@ -71,7 +66,7 @@ func signup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var resp = SignupResponse{
+	var resp = AuthResponse{
 		Token: t,
 	}
 	w.Header().Add("Content-Type", "application/json")

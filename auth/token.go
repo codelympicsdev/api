@@ -1,9 +1,13 @@
 package auth
 
 import (
-	"crypto/rand"
 	"crypto/rsa"
+	"crypto/x509"
+	"encoding/pem"
+	"errors"
+	"io/ioutil"
 	"log"
+	"net/http"
 	"strings"
 	"time"
 
@@ -25,24 +29,34 @@ var secret *jwt.RSA
 
 func init() {
 	var err error
-	privateKey, err = rsa.GenerateKey(rand.Reader, 2048)
+	keyFile, err := ioutil.ReadFile("test.pem")
 	if err != nil {
-		log.Fatal("failed to generate private key ", err.Error())
+		log.Fatal("failed to open private key ", err.Error())
+	}
+
+	key, _ := pem.Decode(keyFile)
+	privateKey, err = x509.ParsePKCS1PrivateKey(key.Bytes)
+	if err != nil {
+		log.Fatal("failed to decode private key ", err.Error())
 	}
 
 	PublicKey = &privateKey.PublicKey
 
 	secret = jwt.NewRSA(jwt.SHA512, privateKey, PublicKey)
+
+	
 }
 
 // Token is the structure for the JWT token
 type Token struct {
 	jwt.Payload
 
-	ID        string `json:"id"`
-	FullName  string `json:"full_name"`
-	Email     string `json:"email"`
-	AvatarURL string `json:"avatar_url"`
+	RequiresUpgrade bool `json:"requires_upgrade"`
+
+	ID        string `json:"id,omitempty"`
+	FullName  string `json:"full_name,omitempty"`
+	Email     string `json:"email,omitempty"`
+	AvatarURL string `json:"avatar_url,omitempty"`
 
 	Scopes []string `json:"scopes"`
 }
@@ -67,6 +81,35 @@ func NewToken(user *database.User, scopes []string, audience string) *Token {
 
 		Scopes: scopes,
 	}
+}
+
+// NewUnverifiedToken is a token used when the authentication is not complete
+func NewUnverifiedToken(user *database.User, scopes []string, audience string) *Token {
+	now := time.Now()
+
+	return &Token{
+		Payload: jwt.Payload{
+			Issuer:         Issuer,
+			Subject:        user.ID,
+			Audience:       jwt.Audience{audience},
+			ExpirationTime: now.Add(24 * time.Hour).Unix(),
+			IssuedAt:       now.Unix(),
+		},
+
+		RequiresUpgrade: true,
+
+		Scopes: scopes,
+	}
+}
+
+// Upgrade an unverified token to a verified one
+func (t *Token) Upgrade(user *database.User) {
+	t.RequiresUpgrade = false
+
+	t.ID = user.ID
+	t.FullName = user.FullName
+	t.Email = user.Email
+	t.AvatarURL = user.AvatarURL
 }
 
 // Sign a token and return a JWT
@@ -111,11 +154,6 @@ func Validate(token string, audience string) (*Token, error) {
 	return t, nil
 }
 
-// User gets this tokens' user from the database
-func (t *Token) User() *database.User {
-	return &database.User{}
-}
-
 // HasScope checks if a token has this scope
 func (t *Token) HasScope(requiredScope string) bool {
 	for _, scope := range t.Scopes {
@@ -125,4 +163,25 @@ func (t *Token) HasScope(requiredScope string) bool {
 	}
 
 	return false
+}
+
+// ErrHeaderStructureIncorrect means an incorrectly formatter error
+var ErrHeaderStructureIncorrect = errors.New("header structure incorrect")
+
+// TokenFromHeader gets a token from the HTTP Authorization header
+func TokenFromHeader(r *http.Request) (*Token, error) {
+	authorizationHeader := r.Header.Get("Authorization")
+
+	authorizationParts := strings.Split(authorizationHeader, " ")
+
+	if len(authorizationParts) != 2 || authorizationParts[0] != "Bearer" || authorizationParts[1] == "" {
+		return nil, ErrHeaderStructureIncorrect
+	}
+
+	token, err := Validate(authorizationParts[1], Issuer)
+	if err != nil {
+		return nil, err
+	}
+
+	return token, nil
 }
