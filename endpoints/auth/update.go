@@ -93,7 +93,7 @@ func updatePassword(w http.ResponseWriter, r *http.Request) {
 		}
 
 		w.Header().Add("Content-Type", "application/json")
-		w.Write([]byte(`{"success": true}`))
+		w.Write([]byte(`{}`))
 	} else {
 		errors.MissingPermission(w, "auth")
 		return
@@ -225,7 +225,7 @@ func verifyOTP(w http.ResponseWriter, r *http.Request) {
 		}
 
 		w.Header().Add("Content-Type", "application/json")
-		w.Write([]byte(`{"success": true}`))
+		w.Write([]byte(`{}`))
 	} else {
 		errors.MissingPermission(w, "auth")
 		return

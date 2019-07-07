@@ -4,12 +4,14 @@ import "time"
 
 // Challenge is the data stored about a challenge in the database
 type Challenge struct {
-	ID          string     `json:"id"`
-	Name        string     `json:"name"`
-	Description string     `json:"description"`
-	Generator   string     `json:"generator"`
-	PublishDate time.Time `json:"publish_date"`
-	ResultsDate time.Time `json:"results_date"`
+	ID              string        `json:"id"`
+	Name            string        `json:"name"`
+	Description     string        `json:"description"`
+	Generator       string        `json:"generator"`
+	MaxLiveAttempts int           `json:"max_live_attempts"`
+	Timeout         time.Duration `json:"timeout"`
+	PublishDate     time.Time     `json:"publish_date"`
+	ResultsDate     time.Time     `json:"results_date"`
 }
 
 // GetChallengeByID a challenge from the database by id

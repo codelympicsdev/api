@@ -44,17 +44,17 @@ func get(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if time.Now().Before(c.PublishDate) && !token.HasScope("admin.challenges") {
+		errors.NotFound(w)
+		return
+	}
+
 	resp := &GetChallengeResponse{
 		ID:          c.ID,
 		Name:        c.Name,
 		Description: c.Description,
 		PublishDate: c.PublishDate.Unix(),
 		ResultsDate: c.ResultsDate.Unix(),
-	}
-
-	if time.Now().Before(c.PublishDate) && !token.HasScope("admin.challenges") {
-		errors.NotFound(w)
-		return
 	}
 
 	w.Header().Add("Content-Type", "application/json")

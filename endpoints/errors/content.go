@@ -29,3 +29,17 @@ func NotFound(w http.ResponseWriter) {
 	w.Header().Add("Content-Type", "application/json")
 	w.Write([]byte(`{"error": "not_found"}`))
 }
+
+// MaxAttemptsReached means that the maximum attempts have been reached
+func MaxAttemptsReached(w http.ResponseWriter) {
+	w.WriteHeader(400)
+	w.Header().Add("Content-Type", "application/json")
+	w.Write([]byte(`{"error": "max_attempts_reached"}`))
+}
+
+// AttemptTimedOut means that the attempt response was not recieved in time
+func AttemptTimedOut(w http.ResponseWriter) {
+	w.WriteHeader(400)
+	w.Header().Add("Content-Type", "application/json")
+	w.Write([]byte(`{"error": "attempt_timed_out"}`))
+}
