@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -14,7 +15,7 @@ import (
 
 func main() {
 	err := database.Connect()
-	if err !=nil {
+	if err != nil {
 		log.Fatal("could not connect to server ", err.Error())
 	}
 
