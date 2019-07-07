@@ -3,6 +3,7 @@ package database
 import (
 	"crypto/rand"
 	"encoding/hex"
+	"log"
 	"os"
 	"time"
 
@@ -11,18 +12,15 @@ import (
 
 var db *wrap.Database
 
-// Connect to the db
-func Connect() error {
+func init() {
 	var databaseURI = os.Getenv("MONGO_URI")
 
 	client, err := wrap.Connect(databaseURI, 5*time.Second)
 	if err != nil {
-		return err
+		log.Fatalln(err.Error())
 	}
 
 	db = client.Database("production")
-
-	return nil
 }
 
 func randomHex(n int) (string, error) {
