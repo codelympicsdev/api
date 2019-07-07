@@ -11,9 +11,11 @@ require (
 	github.com/google/uuid v1.1.1
 	github.com/gorilla/context v1.1.1
 	github.com/gorilla/mux v1.7.3
-	github.com/kr/pretty v0.1.0 // indirect
+	github.com/kirsle/configdir v0.0.0-20170128060238-e45d2f54772f // indirect
 	github.com/lucacasonato/wrap v0.3.4
 	github.com/montanaflynn/stats v0.5.0 // indirect
 	github.com/pquerna/otp v1.2.0
+	github.com/spf13/cobra v0.0.5 // indirect
+	github.com/spf13/viper v1.4.0 // indirect
 	golang.org/x/crypto v0.0.0-20190701094942-4def268fd1a4
 )

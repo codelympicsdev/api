@@ -6,12 +6,18 @@ import (
 
 	"github.com/gorilla/mux"
 
+	"github.com/codelympicsdev/api/database"
 	"github.com/codelympicsdev/api/endpoints/auth"
 	"github.com/codelympicsdev/api/endpoints/challenges"
 	"github.com/codelympicsdev/api/endpoints/users"
 )
 
 func main() {
+	err := database.Connect()
+	if err !=nil {
+		log.Fatal("could not connect to server ", err.Error())
+	}
+
 	r := mux.NewRouter()
 
 	v0 := r.PathPrefix("/v0").Subrouter()
