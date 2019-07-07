@@ -58,7 +58,7 @@ func signup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token := auth.NewToken(user, []string{"user"}, "codelympics.dev")
+	token := auth.NewToken(user, []string{""}, "codelympics.dev")
 	t, err := token.Sign()
 	if err != nil {
 		log.Println(err.Error())

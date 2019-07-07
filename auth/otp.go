@@ -2,20 +2,21 @@ package auth
 
 import (
 	"github.com/codelympicsdev/api/database"
+	"github.com/pquerna/otp"
 	"github.com/pquerna/otp/totp"
 )
 
-// GenerateOTPSecret creates an OTP secret for the user
-func GenerateOTPSecret(user *database.User) (string, error) {
+// GenerateOTP creates an OTP secret for the user
+func GenerateOTP(user *database.User) (*otp.Key, error) {
 	key, err := totp.Generate(totp.GenerateOpts{
 		Issuer:      "codelympics.dev",
 		AccountName: user.Email,
 	})
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	return key.Secret(), nil
+	return key, nil
 }
 
 // IsOTPValid checks if OTP is valid

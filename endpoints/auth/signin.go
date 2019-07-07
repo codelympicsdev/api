@@ -54,9 +54,9 @@ func signin(w http.ResponseWriter, r *http.Request) {
 
 	var token *auth.Token
 	if user.OTPEnabled {
-		token = auth.NewUnverifiedToken(user, []string{"user"}, "codelympics.dev")
+		token = auth.NewUnverifiedToken(user, []string{""}, "codelympics.dev")
 	} else {
-		token = auth.NewToken(user, []string{"user"}, "codelympics.dev")
+		token = auth.NewToken(user, []string{""}, "codelympics.dev")
 	}
 
 	t, err := token.Sign()
