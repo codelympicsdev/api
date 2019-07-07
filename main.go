@@ -7,7 +7,7 @@ import (
 
 	"github.com/gorilla/mux"
 
-	Auth "github.com/codelympicsdev/auth"
+	Auth "github.com/codelympicsdev/api/auth"
 	"github.com/codelympicsdev/api/database"
 	"github.com/codelympicsdev/api/endpoints/auth"
 	"github.com/codelympicsdev/api/endpoints/challenges"
