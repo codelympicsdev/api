@@ -42,10 +42,7 @@ func init() {
 		}
 	}
 
-	key, err := pem.Decode(keyFile)
-	if err != nil {
-		log.Fatalln("failed to decode private key " + err.Error())
-	}
+	key, _ := pem.Decode(keyFile)
 	privateKey, err = x509.ParsePKCS1PrivateKey(key.Bytes)
 	if err != nil {
 		log.Fatalln("failed to decode private key " + err.Error())
