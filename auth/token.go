@@ -6,7 +6,6 @@ import (
 	"encoding/pem"
 	"errors"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"strings"
 	"time"
@@ -27,24 +26,25 @@ var privateKey *rsa.PrivateKey
 
 var secret *jwt.RSA
 
-func init() {
+// Init the auth stuff
+func Init() error {
 	var err error
 	keyFile, err := ioutil.ReadFile("test.pem")
 	if err != nil {
-		log.Fatal("failed to open private key ", err.Error())
+		return errors.New("failed to open private key " + err.Error())
 	}
 
 	key, _ := pem.Decode(keyFile)
 	privateKey, err = x509.ParsePKCS1PrivateKey(key.Bytes)
 	if err != nil {
-		log.Fatal("failed to decode private key ", err.Error())
+		return errors.New("failed to decode private key " + err.Error())
 	}
 
 	PublicKey = &privateKey.PublicKey
 
 	secret = jwt.NewRSA(jwt.SHA512, privateKey, PublicKey)
 
-	
+	return nil
 }
 
 // Token is the structure for the JWT token

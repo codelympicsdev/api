@@ -7,6 +7,7 @@ import (
 
 	"github.com/gorilla/mux"
 
+	Auth "github.com/codelympicsdev/auth"
 	"github.com/codelympicsdev/api/database"
 	"github.com/codelympicsdev/api/endpoints/auth"
 	"github.com/codelympicsdev/api/endpoints/challenges"
@@ -15,6 +16,11 @@ import (
 
 func main() {
 	err := database.Connect()
+	if err != nil {
+		log.Fatal("could not connect to server ", err.Error())
+	}
+
+	err = Auth.Init()
 	if err != nil {
 		log.Fatal("could not connect to server ", err.Error())
 	}

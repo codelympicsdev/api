@@ -9,12 +9,12 @@ import (
 	"github.com/lucacasonato/wrap"
 )
 
-var databaseURI = os.Getenv("MONGO_URI")
-
 var db *wrap.Database
 
 // Connect to the db
 func Connect() error {
+	var databaseURI = os.Getenv("MONGO_URI")
+
 	client, err := wrap.Connect(databaseURI, 5*time.Second)
 	if err != nil {
 		return err
