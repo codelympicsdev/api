@@ -12,6 +12,7 @@ import (
 	"github.com/codelympicsdev/api/endpoints/auth"
 	"github.com/codelympicsdev/api/endpoints/challenges"
 	"github.com/codelympicsdev/api/endpoints/users"
+	"github.com/codelympicsdev/api/endpoints/attempts"
 )
 
 func main() {
@@ -32,6 +33,7 @@ func main() {
 	auth.Route(v0.PathPrefix("/auth").Subrouter())
 	users.Route(v0.PathPrefix("/users").Subrouter())
 	challenges.Route(v0.PathPrefix("/challenges").Subrouter())
+	attempts.Route(v0.PathPrefix("/attempts").Subrouter())
 
 	/*
 			c := &database.Challenge{
@@ -46,7 +48,7 @@ func main() {
 		  return {
 		    Input: {
 		      Args: [],
-		      Stdin: one.toString() + '\n' + two.toString(),
+		      Stdin: one.toString() + '\n' + two.toString()+ '\n',
 		    },
 		    Output: {
 		      Stdout: (one + two).toString(),

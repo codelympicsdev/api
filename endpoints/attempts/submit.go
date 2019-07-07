@@ -42,17 +42,17 @@ func submit(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if attempt.User == token.ID {
+	if attempt.User != token.ID {
 		errors.InvalidCredentials(w)
 		return
 	}
 
-	if token.HasScope("challenge.attempt") {
+	if !token.HasScope("challenge.attempt") {
 		errors.MissingPermission(w, "challenge.attempt")
 		return
 	}
 
-	if attempt.Completed == (time.Time{}) || attempt.RecievedOutput != nil {
+	if attempt.Completed != (time.Time{}) || attempt.RecievedOutput != nil {
 		errors.Duplicate(w)
 		return
 	}
