@@ -14,13 +14,17 @@ var db *wrap.Database
 
 func init() {
 	var databaseURI = os.Getenv("MONGO_URI")
+	var database = os.Getenv("MONGO_DB")
+	if database == "" {
+		database = "development"
+	}
 
 	client, err := wrap.Connect(databaseURI, 5*time.Second)
 	if err != nil {
 		log.Fatalln(err.Error())
 	}
 
-	db = client.Database("production")
+	db = client.Database(database)
 }
 
 func randomHex(n int) (string, error) {
