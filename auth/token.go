@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 
@@ -29,10 +30,16 @@ var secret *jwt.RSA
 
 // Init the auth stuff
 func init() {
+	pemFile := os.Getenv("PRIVATE_KEY")
 	var err error
-	keyFile, err := ioutil.ReadFile("test.pem")
-	if err != nil {
-		log.Fatalln("failed to open private key " + err.Error())
+	var keyFile []byte
+	if strings.HasPrefix(pemFile, "-----") {
+		keyFile = []byte(pemFile)
+	} else {
+		keyFile, err = ioutil.ReadFile(pemFile)
+		if err != nil {
+			log.Fatalln("failed to open private key " + err.Error())
+		}
 	}
 
 	key, _ := pem.Decode(keyFile)
