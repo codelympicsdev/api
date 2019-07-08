@@ -47,8 +47,8 @@ func submit(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !token.HasScope("challenge.attempt") {
-		errors.MissingPermission(w, "challenge.attempt")
+	if !token.HasScope("challenge.attempt.write") {
+		errors.MissingPermission(w, "challenge.attempt.write")
 		return
 	}
 

@@ -8,5 +8,6 @@ import (
 // Route a auth request
 func Route(r *mux.Router) {
 	r.Use(auth.TokenValidationMiddleware)
+	r.HandleFunc("/{id}", get).Methods("GET")
 	r.HandleFunc("/{id}/submit", submit).Methods("POST")
 }
