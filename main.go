@@ -1,13 +1,11 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 	"os"
 
 	"github.com/gorilla/mux"
 
-	"github.com/codelympicsdev/api/database"
 	"github.com/codelympicsdev/api/endpoints/apiclients"
 	"github.com/codelympicsdev/api/endpoints/attempts"
 	"github.com/codelympicsdev/api/endpoints/auth"
