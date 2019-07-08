@@ -1,11 +1,13 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 	"os"
 
 	"github.com/gorilla/mux"
 
+	"github.com/codelympicsdev/api/database"
 	"github.com/codelympicsdev/api/endpoints/apiclients"
 	"github.com/codelympicsdev/api/endpoints/attempts"
 	"github.com/codelympicsdev/api/endpoints/auth"
@@ -18,7 +20,7 @@ func main() {
 
 	v0 := r.PathPrefix("/v0").Subrouter()
 
-	apiclients.Route(v0.PathPrefix("/apicĺients").Subrouter())
+	apiclients.Route(v0.PathPrefix("/apiclients").Subrouter())
 	auth.Route(v0.PathPrefix("/auth").Subrouter())
 	users.Route(v0.PathPrefix("/users").Subrouter())
 	challenges.Route(v0.PathPrefix("/challenges").Subrouter())
