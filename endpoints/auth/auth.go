@@ -11,10 +11,12 @@ type AuthResponse struct {
 func Route(r *mux.Router) {
 	r.HandleFunc("/publickey", publickey).Methods("GET")
 
-	r.HandleFunc("/signup", signup).Methods("POST")
+	protected := r.PathPrefix("").Subrouter()
 
-	r.HandleFunc("/signin", signin).Methods("POST")
-	r.HandleFunc("/upgrade/otp", upgradeWithOTP).Methods("POST")
+	protected.Use(TrustedClientIDValidationMiddleware)
+	protected.HandleFunc("/signup", signup).Methods("POST")
+	protected.HandleFunc("/signin", signin).Methods("POST")
+	protected.HandleFunc("/upgrade/otp", upgradeWithOTP).Methods("POST")
 
 	update := r.PathPrefix("/update").Subrouter()
 

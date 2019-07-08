@@ -43,3 +43,10 @@ func MissingPermission(w http.ResponseWriter, scope string) {
 	w.Header().Add("Content-Type", "application/json")
 	w.Write([]byte(`{"error": "missing_permission", "scope": "` + scope + `"}`))
 }
+
+// InvalidAPIClient means that the supplied api client (credentials) are not correct
+func InvalidAPIClient(w http.ResponseWriter) {
+	w.WriteHeader(400)
+	w.Header().Add("Content-Type", "application/json")
+	w.Write([]byte(`{"error": "invalid_api_client"}`))
+}

@@ -5,6 +5,12 @@ import (
 	"github.com/codelympicsdev/api/database"
 )
 
+var defaultScopes = []string{
+	"user",
+	"challenge",
+	"auth",
+}
+
 // Signup a new user
 func Signup(name string, email string, password string) (*database.User, error) {
 	g := gravatar.NewGravatarFromEmail(email)
@@ -19,6 +25,7 @@ func Signup(name string, email string, password string) (*database.User, error) 
 		FullName:  name,
 		Email:     email,
 		AvatarURL: url,
+		Scopes:    defaultScopes,
 
 		Password: pw,
 	}

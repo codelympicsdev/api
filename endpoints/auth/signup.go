@@ -7,11 +7,13 @@ import (
 	"strings"
 
 	"github.com/codelympicsdev/api/auth"
+	"github.com/codelympicsdev/api/database"
 	"github.com/codelympicsdev/api/endpoints/errors"
 )
 
 // SignupRequest is what is used to sign up
 type SignupRequest struct {
+	ClientID string `json:"client_id"`
 	FullName string `json:"full_name"`
 	Email    string `json:"email"`
 	Password string `json:"password"`
@@ -32,6 +34,11 @@ func signup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if req.ClientID == "" {
+		errors.MissingField(w, "client_id")
+		return
+	}
+
 	if req.FullName == "" {
 		errors.MissingField(w, "full_name")
 		return
@@ -47,6 +54,13 @@ func signup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	client, err := database.GetAPIClientByID(req.ClientID)
+	if err != nil {
+		log.Println(err.Error())
+		errors.InternalServerError(w)
+		return
+	}
+
 	user, err := auth.Signup(req.FullName, req.Email, req.Password)
 	if err != nil {
 		if strings.Contains(err.Error(), "duplicate key") {
@@ -58,7 +72,7 @@ func signup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token := auth.NewToken(user, []string{""}, "codelympics.dev")
+	token := auth.NewToken(user, client)
 	t, err := token.Sign()
 	if err != nil {
 		log.Println(err.Error())

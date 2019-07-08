@@ -8,13 +8,14 @@ import (
 
 // User is the data stored about a single user in the database
 type User struct {
-	ID         string `json:"id"`
-	FullName   string `json:"full_name"`
-	Email      string `json:"email"`
-	AvatarURL  string `json:"avatar_url"`
-	OTPEnabled bool   `json:"otp_enabled"`
-	Password   string `json:"password"`
-	OTPSecret  string `json:"otp_secret"`
+	ID         string   `json:"id"`
+	FullName   string   `json:"full_name"`
+	Email      string   `json:"email"`
+	AvatarURL  string   `json:"avatar_url"`
+	OTPEnabled bool     `json:"otp_enabled"`
+	Password   string   `json:"password"`
+	OTPSecret  string   `json:"otp_secret"`
+	Scopes     []string `json:"scopes"`
 }
 
 // GetUserByID a user from the database by id

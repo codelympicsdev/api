@@ -7,11 +7,13 @@ import (
 	"strings"
 
 	"github.com/codelympicsdev/api/auth"
+	"github.com/codelympicsdev/api/database"
 	"github.com/codelympicsdev/api/endpoints/errors"
 )
 
 // SigninRequest is what is used to sign in
 type SigninRequest struct {
+	ClientID string `json:"client_id"`
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
@@ -31,6 +33,11 @@ func signin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if req.ClientID == "" {
+		errors.MissingField(w, "client_id")
+		return
+	}
+
 	if req.Email == "" {
 		errors.MissingField(w, "email")
 		return
@@ -38,6 +45,13 @@ func signin(w http.ResponseWriter, r *http.Request) {
 
 	if req.Password == "" {
 		errors.MissingField(w, "password")
+		return
+	}
+
+	client, err := database.GetAPIClientByID(req.ClientID)
+	if err != nil {
+		log.Println(err.Error())
+		errors.InternalServerError(w)
 		return
 	}
 
@@ -54,9 +68,9 @@ func signin(w http.ResponseWriter, r *http.Request) {
 
 	var token *auth.Token
 	if user.OTPEnabled {
-		token = auth.NewUnverifiedToken(user, []string{""}, "codelympics.dev")
+		token = auth.NewUnverifiedToken(user, client)
 	} else {
-		token = auth.NewToken(user, []string{""}, "codelympics.dev")
+		token = auth.NewToken(user, client)
 	}
 
 	t, err := token.Sign()

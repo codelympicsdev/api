@@ -68,14 +68,22 @@ type Token struct {
 }
 
 // NewToken from user and scopes
-func NewToken(user *database.User, scopes []string, audience string) *Token {
+func NewToken(user *database.User, client *database.APIClient) *Token {
 	now := time.Now()
+
+	var scopes []string
+
+	for _, scope := range client.Scopes {
+		if hasScope(user.Scopes, scope) {
+			scopes = append(scopes, scope)
+		}
+	}
 
 	return &Token{
 		Payload: jwt.Payload{
 			Issuer:         Issuer,
 			Subject:        user.ID,
-			Audience:       jwt.Audience{audience},
+			Audience:       jwt.Audience{client.ID},
 			ExpirationTime: now.Add(24 * time.Hour).Unix(),
 			IssuedAt:       now.Unix(),
 		},
@@ -90,14 +98,22 @@ func NewToken(user *database.User, scopes []string, audience string) *Token {
 }
 
 // NewUnverifiedToken is a token used when the authentication is not complete
-func NewUnverifiedToken(user *database.User, scopes []string, audience string) *Token {
+func NewUnverifiedToken(user *database.User, client *database.APIClient) *Token {
 	now := time.Now()
+
+	var scopes []string
+
+	for _, scope := range client.Scopes {
+		if hasScope(user.Scopes, scope) {
+			scopes = append(scopes, scope)
+		}
+	}
 
 	return &Token{
 		Payload: jwt.Payload{
 			Issuer:         Issuer,
 			Subject:        user.ID,
-			Audience:       jwt.Audience{audience},
+			Audience:       jwt.Audience{client.ID},
 			ExpirationTime: now.Add(24 * time.Hour).Unix(),
 			IssuedAt:       now.Unix(),
 		},
@@ -162,7 +178,11 @@ func Validate(token string, audience string) (*Token, error) {
 
 // HasScope checks if a token has this scope
 func (t *Token) HasScope(requiredScope string) bool {
-	for _, scope := range t.Scopes {
+	return hasScope(t.Scopes, requiredScope)
+}
+
+func hasScope(scopes []string, requiredScope string) bool {
+	for _, scope := range scopes {
 		if strings.HasPrefix(requiredScope, scope) {
 			return true
 		}
