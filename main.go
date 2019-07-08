@@ -29,5 +29,8 @@ func main() {
 		port = "8080"
 	}
 
-	http.ListenAndServe(":"+port, r)
+	err := http.ListenAndServe(":"+port, r)
+	if err != nil {
+		panic(err.Error())
+	}
 }
