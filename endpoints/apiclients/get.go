@@ -14,6 +14,7 @@ import (
 // GetAPIClientResponse is the response for getting a single api client
 type GetAPIClientResponse struct {
 	ID          string   `json:"id"`
+	Name        string   `json:"name"`
 	RedirectURL string   `json:"redirect_url"`
 	Trusted     bool     `json:"trusted"`
 	Scopes      []string `json:"scopes"`
@@ -35,10 +36,11 @@ func get(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var resp = &GetAPIClientResponse{
-		ID:           client.ID,
+		ID:          client.ID,
+		Name:        client.Name,
 		RedirectURL: client.RedirectURL,
-		Trusted:      client.Trusted,
-		Scopes:       client.Scopes,
+		Trusted:     client.Trusted,
+		Scopes:      client.Scopes,
 	}
 
 	w.Header().Add("Content-Type", "application/json")

@@ -14,8 +14,8 @@ func Route(r *mux.Router) {
 	protected := r.PathPrefix("").Subrouter()
 
 	protected.Use(TrustedClientIDValidationMiddleware)
-	protected.HandleFunc("/signup", signup).Methods("POST")
 	protected.HandleFunc("/signin", signin).Methods("POST")
+	protected.HandleFunc("/signup", signup).Methods("POST")
 	protected.HandleFunc("/upgrade/otp", upgradeWithOTP).Methods("POST")
 
 	update := r.PathPrefix("/update").Subrouter()
