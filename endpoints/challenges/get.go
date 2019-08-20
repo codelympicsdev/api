@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 
@@ -21,6 +22,54 @@ type GetChallengeResponse struct {
 	Description string `json:"description"`
 	PublishDate int64  `json:"publish_date"`
 	ResultsDate int64  `json:"results_date"`
+}
+
+// get all  challenges
+func getAll(w http.ResponseWriter, r *http.Request) {
+	token, ok := context.Get(r, "token").(*auth.Token)
+	if ok == false {
+		errors.InternalServerError(w)
+		return
+	}
+
+	limit, err := strconv.Atoi(r.FormValue("limit"))
+	if err != nil {
+		limit = 10
+	}
+	skip, err := strconv.Atoi(r.FormValue("skip"))
+	if err != nil {
+		skip = 10
+	}
+
+	challenges, err := database.GetChallenges(!token.HasScope("admin.challenges"), limit, skip)
+	if err != nil {
+		if strings.Contains(err.Error(), "no documents") {
+			errors.NotFound(w)
+			return
+		}
+		log.Println(err.Error())
+		errors.InternalServerError(w)
+		return
+	}
+
+	var resp []GetChallengeResponse
+	for _, c := range challenges {
+		resp = append(resp, GetChallengeResponse{
+			ID:          c.ID,
+			Name:        c.Name,
+			Description: c.Description,
+			PublishDate: c.PublishDate.Unix(),
+			ResultsDate: c.ResultsDate.Unix(),
+		})
+	}
+
+	w.Header().Add("Content-Type", "application/json")
+	err = json.NewEncoder(w).Encode(resp)
+	if err != nil {
+		log.Println(err.Error())
+		errors.InternalServerError(w)
+		return
+	}
 }
 
 // get a challenge
@@ -49,7 +98,7 @@ func get(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resp := &GetChallengeResponse{
+	resp := GetChallengeResponse{
 		ID:          c.ID,
 		Name:        c.Name,
 		Description: c.Description,
