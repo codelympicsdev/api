@@ -18,7 +18,7 @@ func main() {
 
 	v0 := r.PathPrefix("/v0").Subrouter()
 
-	v0.Use(HTTPRedirect)
+	//v0.Use(HTTPRedirect)
 
 	apiclients.Route(v0.PathPrefix("/apiclients").Subrouter())
 	auth.Route(v0.PathPrefix("/auth").Subrouter())
