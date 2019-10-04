@@ -108,7 +108,7 @@ func NewUnverifiedToken(user *database.User, client *database.APIClient) *Token 
 			scopes = append(scopes, scope)
 		}
 	}
-	
+
 	return &Token{
 		Payload: jwt.Payload{
 			Issuer:         Issuer,
@@ -147,7 +147,7 @@ func (t *Token) Sign() (string, error) {
 }
 
 // Validate a token
-func Validate(token string, audience string) (*Token, error) {
+func Validate(token string) (*Token, error) {
 	raw, err := jwt.Parse([]byte(token))
 	if err != nil {
 		return nil, err
@@ -167,9 +167,8 @@ func Validate(token string, audience string) (*Token, error) {
 	now := time.Now()
 	iatValidator := jwt.IssuedAtValidator(now)
 	expValidator := jwt.ExpirationTimeValidator(now, true)
-	audValidator := jwt.AudienceValidator(jwt.Audience{audience})
 
-	if err := t.Validate(iatValidator, expValidator, audValidator); err != nil {
+	if err := t.Validate(iatValidator, expValidator); err != nil {
 		return nil, err
 	}
 
@@ -204,7 +203,7 @@ func TokenFromHeader(r *http.Request) (*Token, error) {
 		return nil, ErrHeaderStructureIncorrect
 	}
 
-	token, err := Validate(authorizationParts[1], Issuer)
+	token, err := Validate(authorizationParts[1])
 	if err != nil {
 		return nil, err
 	}

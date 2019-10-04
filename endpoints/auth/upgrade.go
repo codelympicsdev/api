@@ -40,7 +40,7 @@ func upgradeWithOTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, err := auth.Validate(req.Token, auth.Issuer)
+	token, err := auth.Validate(req.Token)
 	if err != nil {
 		errors.InvalidCredentials(w)
 		return
