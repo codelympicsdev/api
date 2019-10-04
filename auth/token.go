@@ -101,14 +101,14 @@ func NewToken(user *database.User, client *database.APIClient) *Token {
 func NewUnverifiedToken(user *database.User, client *database.APIClient) *Token {
 	now := time.Now()
 
-	var scopes []string
+	scopes := []string{}
 
 	for _, scope := range client.Scopes {
-		if hasScope(user.Scopes, scope) {
+		if hasScope(user.Scopes, scope) || hasScope(user.Scopes, "admin") {
 			scopes = append(scopes, scope)
 		}
 	}
-
+	
 	return &Token{
 		Payload: jwt.Payload{
 			Issuer:         Issuer,
