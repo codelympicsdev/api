@@ -18,6 +18,8 @@ func main() {
 
 	v0 := r.PathPrefix("/v0").Subrouter()
 
+	v0.Use(HTTPRedirect)
+
 	apiclients.Route(v0.PathPrefix("/apiclients").Subrouter())
 	auth.Route(v0.PathPrefix("/auth").Subrouter())
 	users.Route(v0.PathPrefix("/users").Subrouter())
@@ -33,4 +35,15 @@ func main() {
 	if err != nil {
 		panic(err.Error())
 	}
+}
+
+// HTTPRedirect redirects http traffic to https
+func HTTPRedirect(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Header["X-Forwarded-Proto"][0] == "http" {
+			http.Redirect(w, r, "https://"+r.Host+r.RequestURI, http.StatusMovedPermanently)
+			return
+		}
+		next.ServeHTTP(w, r)
+	})
 }
