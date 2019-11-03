@@ -9,17 +9,17 @@ import (
 
 // Attempt is the data stored about an attempt in the database
 type Attempt struct {
-	ID        string `json:"id"`
-	User      string `json:"user"`
-	Challenge string `json:"challenge"`
+	ID        string `bson:"id"`
+	User      string `bson:"user"`
+	Challenge string `bson:"challenge"`
 
-	Started   time.Time `json:"started"`
-	Timeout   time.Time `json:"timeout"`
-	Completed time.Time `json:"completed"`
+	Started   time.Time `bson:"started"`
+	Timeout   time.Time `bson:"timeout"`
+	Completed time.Time `bson:"completed"`
 
-	Input          *AttemptInput  `json:"input"`
-	ExpectedOutput *AttemptOutput `json:"expected_output"`
-	RecievedOutput *AttemptOutput `json:"recieved_output"`
+	Input          *AttemptInput  `bson:"input"`
+	ExpectedOutput *AttemptOutput `bson:"expected_output"`
+	RecievedOutput *AttemptOutput `bson:"recieved_output"`
 }
 
 // AttemptInput is the input data for a specifc attempt

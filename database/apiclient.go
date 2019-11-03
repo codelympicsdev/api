@@ -2,13 +2,13 @@ package database
 
 // APIClient is the data stored about an api client in the database
 type APIClient struct {
-	ID          string   `json:"id"`
-	Name        string   `json:"name"`
-	RedirectURL string   `json:"redirect_url"`
-	Trusted     bool     `json:"trusted"`
-	Scopes      []string `json:"scopes"`
+	ID          string   `bson:"id"`
+	Name        string   `bson:"name"`
+	RedirectURL string   `bson:"redirect_url"`
+	Trusted     bool     `bson:"trusted"`
+	Scopes      []string `bson:"scopes"`
 
-	Secret string `json:"secret"`
+	Secret string `bson:"secret"`
 }
 
 // GetAPIClientByID an api client from the database by id
