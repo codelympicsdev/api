@@ -10,6 +10,7 @@ import (
 	"github.com/codelympicsdev/api/endpoints/attempts"
 	"github.com/codelympicsdev/api/endpoints/auth"
 	"github.com/codelympicsdev/api/endpoints/challenges"
+	"github.com/codelympicsdev/api/endpoints/graphql"
 	"github.com/codelympicsdev/api/endpoints/users"
 )
 
@@ -25,6 +26,8 @@ func main() {
 	users.Route(v0.PathPrefix("/users").Subrouter())
 	challenges.Route(v0.PathPrefix("/challenges").Subrouter())
 	attempts.Route(v0.PathPrefix("/attempts").Subrouter())
+
+	v0.HandleFunc("/graphql", graphql.Handle)
 
 	port := os.Getenv("PORT")
 	if port == "" {

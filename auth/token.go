@@ -177,6 +177,9 @@ func Validate(token string) (*Token, error) {
 
 // HasScope checks if a token has this scope
 func (t *Token) HasScope(requiredScope string) bool {
+	if t == nil || len(t.Scopes) == 0 {
+		return false
+	}
 	return hasScope(t.Scopes, requiredScope)
 }
 

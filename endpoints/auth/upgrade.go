@@ -66,7 +66,7 @@ func upgradeWithOTP(w http.ResponseWriter, r *http.Request) {
 
 	t, err := token.Sign()
 	if err != nil {
-		log.Println(err)
+		log.Println(err.Error())
 		errors.InternalServerError(w)
 		return
 	}

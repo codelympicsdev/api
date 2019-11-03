@@ -16,7 +16,7 @@ func TokenValidationMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		token, err := auth.TokenFromHeader(r)
 		if err != nil {
-			log.Println(err)
+			log.Println(err.Error())
 			errors.InvalidCredentials(w)
 			return
 		}

@@ -11,6 +11,8 @@ require (
 	github.com/go-sourcemap/sourcemap v2.1.2+incompatible // indirect
 	github.com/gorilla/context v1.1.1
 	github.com/gorilla/mux v1.7.3
+	github.com/graphql-go/graphql v0.7.8
+	github.com/graphql-go/handler v0.2.3
 	github.com/kr/pretty v0.1.0 // indirect
 	github.com/lucacasonato/wrap v0.3.4
 	github.com/pquerna/otp v1.2.0

@@ -90,3 +90,32 @@ func GetAttemptCount(challenge *Challenge, userID string) (int, error) {
 
 	return int(count), nil
 }
+
+// GetAttemptsByUser gets all attempts by a certain user
+func GetAttemptsByUser(userID string, onlyForChallenge string, limit int, skip int) ([]*Attempt, error) {
+	f := []filter.Filter{filter.Equal("user", userID)}
+
+	if onlyForChallenge != "" {
+		f = append(f, filter.Equal("challenge", onlyForChallenge))
+	}
+
+	iterator, err := db.Collection("attempts").Where(filter.AND(f...)).Skip(skip).Limit(limit).DocumentIterator()
+	if err != nil {
+		return nil, err
+	}
+	defer iterator.Close()
+
+	var attempts []*Attempt
+	for iterator.Next() {
+		var attempt = new(Attempt)
+		err = iterator.DataTo(attempt)
+		if err != nil {
+			return nil, err
+		}
+
+		attempt.ID = iterator.ID()
+		attempts = append(attempts, attempt)
+	}
+
+	return attempts, nil
+}
