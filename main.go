@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/gorilla/mux"
+	"github.com/rs/cors"
 
 	"github.com/codelympicsdev/api/endpoints/apiclients"
 	"github.com/codelympicsdev/api/endpoints/attempts"
@@ -34,7 +35,7 @@ func main() {
 		port = "8080"
 	}
 
-	err := http.ListenAndServe(":"+port, r)
+	err := http.ListenAndServe(":"+port, cors.Default().Handler(r))
 	if err != nil {
 		panic(err.Error())
 	}
