@@ -22,10 +22,10 @@ type Challenge struct {
 func GetChallenges(onlyPublished bool, limit int, skip int) ([]*Challenge, error) {
 	c := db.Collection("challenges")
 
-	query := c.All()
+	query := c.All().Skip(skip).Limit(limit)
 
 	if onlyPublished {
-		query = c.Where(filter.GreaterThanOrEqual("publish_date", time.Now())).Skip(skip).Limit(limit)
+		query = c.Where(filter.LessThanOrEqual("publish_date", time.Now())).Skip(skip).Limit(limit)
 	}
 
 	data, err := query.DocumentIterator()
