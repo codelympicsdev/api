@@ -35,7 +35,7 @@ func main() {
 		port = "8080"
 	}
 
-	err := http.ListenAndServe(":"+port, cors.Default().Handler(r))
+	err := http.ListenAndServe(":"+port, cors.New(cors.Options{AllowedHeaders: []string{"Authorization", "Content-Type"}}).Handler(r))
 	if err != nil {
 		panic(err.Error())
 	}
