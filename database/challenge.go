@@ -3,6 +3,7 @@ package database
 import (
 	"time"
 
+	"github.com/lucacasonato/wrap"
 	"github.com/lucacasonato/wrap/filter"
 )
 
@@ -22,13 +23,13 @@ type Challenge struct {
 func GetChallenges(onlyPublished bool, limit int, skip int) ([]*Challenge, error) {
 	c := db.Collection("challenges")
 
-	query := c.All().Skip(skip).Limit(limit)
+	query := c.All()
 
 	if onlyPublished {
-		query = c.Where(filter.LessThanOrEqual("publish_date", time.Now())).Skip(skip).Limit(limit)
+		query = c.Where(filter.LessThanOrEqual("publish_date", time.Now()))
 	}
 
-	data, err := query.DocumentIterator()
+	data, err := query.Sort(wrap.Descending("publish_date")).Skip(skip).Limit(limit).DocumentIterator()
 	if err != nil {
 		return nil, err
 	}

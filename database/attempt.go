@@ -4,6 +4,7 @@ import (
 	"errors"
 	"time"
 
+	"github.com/lucacasonato/wrap"
 	"github.com/lucacasonato/wrap/filter"
 )
 
@@ -99,7 +100,7 @@ func GetAttemptsByUser(userID string, onlyForChallenge string, limit int, skip i
 		f = append(f, filter.Equal("challenge", onlyForChallenge))
 	}
 
-	iterator, err := db.Collection("attempts").Where(filter.AND(f...)).Skip(skip).Limit(limit).DocumentIterator()
+	iterator, err := db.Collection("attempts").Where(filter.AND(f...)).Sort(wrap.Descending("started")).Skip(skip).Limit(limit).DocumentIterator()
 	if err != nil {
 		return nil, err
 	}

@@ -13,8 +13,7 @@ require (
 	github.com/gorilla/mux v1.7.3
 	github.com/graphql-go/graphql v0.7.8
 	github.com/graphql-go/handler v0.2.3
-	github.com/kr/pretty v0.1.0 // indirect
-	github.com/lucacasonato/wrap v0.3.4
+	github.com/lucacasonato/wrap v0.4.0
 	github.com/pquerna/otp v1.2.0
 	github.com/rs/cors v1.7.0 // indirect
 	golang.org/x/crypto v0.0.0-20190701094942-4def268fd1a4
