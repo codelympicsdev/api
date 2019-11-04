@@ -41,6 +41,32 @@ var challengeType = gql.NewObject(
 	},
 )
 
+func init() {
+	challengeType.AddFieldConfig("attempts", &gql.Field{
+		Type: gql.NewList(attemptType),
+		Args: gql.FieldConfigArgument{
+			"limit": &gql.ArgumentConfig{
+				Type:         gql.Int,
+				DefaultValue: 10,
+			},
+			"skip": &gql.ArgumentConfig{
+				Type:         gql.Int,
+				DefaultValue: 0,
+			},
+		},
+		Resolve: func(p gql.ResolveParams) (interface{}, error) {
+			var token *auth.Token
+			var ok bool
+			if token, ok = p.Context.Value(keyToken).(*auth.Token); !ok || token == nil {
+				return nil, ErrInvalidAuth
+			}
+			p.Args["id"] = token.Subject
+			p.Args["challenge"] = p.Source.(Challenge).ID
+			return attemptsByUserResolve(p)
+		},
+	})
+}
+
 func challengeResolve(p gql.ResolveParams) (interface{}, error) {
 	var token *auth.Token
 	var ok bool
