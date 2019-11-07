@@ -32,13 +32,13 @@ var challengeType = gql.NewObject(
 			"description": &gql.Field{
 				Type: gql.String,
 			},
-			"maxAttempts": &gql.Field{
+			"max_attempts": &gql.Field{
 				Type: gql.Int,
 			},
-			"publishDate": &gql.Field{
+			"publish_date": &gql.Field{
 				Type: gql.DateTime,
 			},
-			"resultsDate": &gql.Field{
+			"results_date": &gql.Field{
 				Type: gql.DateTime,
 			},
 		},
