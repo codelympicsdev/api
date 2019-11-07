@@ -14,6 +14,7 @@ type Challenge struct {
 	ID          string    `json:"id"`
 	Name        string    `json:"name"`
 	Description string    `json:"description"`
+	MaxAttempts int       `json:"max_attempts"`
 	PublishDate time.Time `json:"publish_date"`
 	ResultsDate time.Time `json:"results_date"`
 }
@@ -31,10 +32,13 @@ var challengeType = gql.NewObject(
 			"description": &gql.Field{
 				Type: gql.String,
 			},
-			"publish_date": &gql.Field{
+			"maxAttempts": &gql.Field{
+				Type: gql.Int,
+			},
+			"publishDate": &gql.Field{
 				Type: gql.DateTime,
 			},
-			"results_date": &gql.Field{
+			"resultsDate": &gql.Field{
 				Type: gql.DateTime,
 			},
 		},
@@ -91,6 +95,7 @@ func challengeResolve(p gql.ResolveParams) (interface{}, error) {
 		ID:          c.ID,
 		Name:        c.Name,
 		Description: c.Description,
+		MaxAttempts: c.MaxLiveAttempts,
 		PublishDate: c.PublishDate,
 		ResultsDate: c.ResultsDate,
 	}

@@ -63,10 +63,10 @@ var attemptType = gql.NewObject(
 			"input": &gql.Field{
 				Type: attemptInputType,
 			},
-			"expected_output": &gql.Field{
+			"expectedOutput": &gql.Field{
 				Type: attemptOutputType,
 			},
-			"recieved_output": &gql.Field{
+			"recievedOutput": &gql.Field{
 				Type: attemptOutputType,
 			},
 		},
