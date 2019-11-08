@@ -8,11 +8,8 @@ import (
 	"github.com/rs/cors"
 
 	"github.com/codelympicsdev/api/endpoints/apiclients"
-	"github.com/codelympicsdev/api/endpoints/attempts"
 	"github.com/codelympicsdev/api/endpoints/auth"
-	"github.com/codelympicsdev/api/endpoints/challenges"
 	"github.com/codelympicsdev/api/endpoints/graphql"
-	"github.com/codelympicsdev/api/endpoints/users"
 )
 
 func main() {
@@ -24,9 +21,6 @@ func main() {
 
 	apiclients.Route(v0.PathPrefix("/apiclients").Subrouter())
 	auth.Route(v0.PathPrefix("/auth").Subrouter())
-	users.Route(v0.PathPrefix("/users").Subrouter())
-	challenges.Route(v0.PathPrefix("/challenges").Subrouter())
-	attempts.Route(v0.PathPrefix("/attempts").Subrouter())
 
 	v0.HandleFunc("/graphql", graphql.Handle)
 
