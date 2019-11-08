@@ -13,11 +13,12 @@ import (
 
 // GetAPIClientResponse is the response for getting a single api client
 type GetAPIClientResponse struct {
-	ID          string   `json:"id"`
-	Name        string   `json:"name"`
-	RedirectURL string   `json:"redirect_url"`
-	Trusted     bool     `json:"trusted"`
-	Scopes      []string `json:"scopes"`
+	ID           string   `json:"id"`
+	Name         string   `json:"name"`
+	Trusted      bool     `json:"trusted"`
+	Scopes       []string `json:"scopes"`
+	RedirectURLs string   `json:"redirect_urls"`
+	Secret       string   `json:"secret"`
 }
 
 // get a challenge
@@ -36,11 +37,12 @@ func get(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var resp = &GetAPIClientResponse{
-		ID:          client.ID,
-		Name:        client.Name,
-		RedirectURL: client.RedirectURL,
-		Trusted:     client.Trusted,
-		Scopes:      client.Scopes,
+		ID:           client.ID,
+		Name:         client.Name,
+		Trusted:      client.Trusted,
+		Scopes:       client.Scopes,
+		RedirectURLs: client.RedirectURLs,
+		Secret:       client.Secret,
 	}
 
 	w.Header().Add("Content-Type", "application/json")

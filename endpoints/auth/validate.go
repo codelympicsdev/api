@@ -21,11 +21,6 @@ func TokenValidationMiddleware(next http.Handler) http.Handler {
 			return
 		}
 
-		if token.RequiresUpgrade == true {
-			errors.UnverifiedToken(w)
-			return
-		}
-
 		context.Set(r, "token", token)
 
 		next.ServeHTTP(w, r)
@@ -54,27 +49,27 @@ func ScopeValidationMiddleware(scopes []string) func(next http.Handler) http.Han
 	}
 }
 
-// TrustedClientIDValidationMiddleware validates if the client id is trusted and the token is valid - used for auth only
-func TrustedClientIDValidationMiddleware(next http.Handler) http.Handler {
+// RootTrustClientValidationMiddleware validates if the root trust client is valid
+func RootTrustClientValidationMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		authorizationHeader := r.Header.Get("Authorization")
 
 		authorizationParts := strings.Split(authorizationHeader, " ")
 
 		if len(authorizationParts) != 2 || authorizationParts[0] == "" || authorizationParts[1] == "" {
-			errors.InvalidAPIClient(w)
+			errors.InvalidRootTrustClient(w)
 			return
 		}
 
-		client, err := database.GetAPIClientByID(authorizationParts[0])
+		client, err := database.GetRootTrustClientByID(authorizationParts[0])
 		if err != nil {
 			log.Println(err.Error())
-			errors.InvalidAPIClient(w)
+			errors.InvalidRootTrustClient(w)
 			return
 		}
 
-		if !auth.DoesHashMatch(client.Secret, authorizationParts[1]) || !client.Trusted {
-			errors.InvalidAPIClient(w)
+		if !auth.DoesHashMatch(client.Secret, authorizationParts[1]) {
+			errors.InvalidRootTrustClient(w)
 			return
 		}
 

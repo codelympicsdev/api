@@ -1,15 +1,6 @@
 package auth
 
-import (
-	"encoding/json"
-	"log"
-	"net/http"
-	"strings"
-
-	"github.com/codelympicsdev/api/auth"
-	"github.com/codelympicsdev/api/database"
-	"github.com/codelympicsdev/api/endpoints/errors"
-)
+/*
 
 // SignupRequest is what is used to sign up
 type SignupRequest struct {
@@ -83,6 +74,7 @@ func signup(w http.ResponseWriter, r *http.Request) {
 	var resp = AuthResponse{
 		Token: t,
 	}
+
 	w.Header().Add("Content-Type", "application/json")
 	err = json.NewEncoder(w).Encode(resp)
 	if err != nil {
@@ -91,3 +83,5 @@ func signup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+
+*/

@@ -6,8 +6,8 @@ import (
 	"github.com/codelympicsdev/api/database"
 )
 
-// Signin an existing user
-func Signin(email string, password string) (*database.User, error) {
+// SigninEmailPassword gets a user with a certain email and checks their password
+func SigninEmailPassword(email string, password string) (*database.User, error) {
 	user, err := database.GetUserByEmail(email)
 	if err != nil {
 		return nil, err

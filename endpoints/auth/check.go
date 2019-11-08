@@ -10,23 +10,34 @@ import (
 	"github.com/codelympicsdev/api/endpoints/errors"
 )
 
-// OPTUpgradeRequest is what is used to upgrade a token with a OTP
-type OPTUpgradeRequest struct {
-	Token string `json:"token"`
-	OTP   string `json:"otp"`
+// CheckResponse is the response to a check request
+type CheckResponse struct {
+	Valid bool `json:"valid"`
 }
 
-func upgradeWithOTP(w http.ResponseWriter, r *http.Request) {
+// CheckOTPRequest is a request to check otp credentials for a user
+type CheckOTPRequest struct {
+	UserID string `json:"user_id"`
+	OTP    string `json:"otp"`
+}
+
+// check otp checks if a given otp is valid
+func checkOTP(w http.ResponseWriter, r *http.Request) {
 	contentType := r.Header.Get("Content-Type")
 	if contentType != "application/json" {
 		errors.WrongContentType(w)
 		return
 	}
 
-	var req OPTUpgradeRequest
+	var req CheckOTPRequest
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
 		errors.MalformedBody(w)
+		return
+	}
+
+	if req.UserID == "" {
+		errors.MissingField(w, "user_id")
 		return
 	}
 
@@ -35,23 +46,7 @@ func upgradeWithOTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if req.Token == "" {
-		errors.MissingField(w, "token")
-		return
-	}
-
-	token, err := auth.Validate(req.Token)
-	if err != nil {
-		errors.InvalidCredentials(w)
-		return
-	}
-
-	if !token.RequiresUpgrade {
-		errors.TokenAlreadyUpgraded(w)
-		return
-	}
-
-	user, err := database.GetUserByID(token.Subject)
+	user, err := database.GetUserByID(req.UserID)
 	if err != nil {
 		errors.UserDoesntExist(w)
 		return
@@ -62,23 +57,16 @@ func upgradeWithOTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token.Upgrade(user)
-
-	t, err := token.Sign()
-	if err != nil {
-		log.Println(err.Error())
-		errors.InternalServerError(w)
-		return
+	var resp = CheckResponse{
+		Valid: true,
 	}
 
-	var resp = AuthResponse{
-		Token: t,
-	}
 	w.Header().Add("Content-Type", "application/json")
 	err = json.NewEncoder(w).Encode(resp)
 	if err != nil {
 		log.Println(err.Error())
 		errors.InternalServerError(w)
 		return
+
 	}
 }

@@ -57,8 +57,6 @@ func init() {
 type Token struct {
 	jwt.Payload
 
-	RequiresUpgrade bool `json:"requires_upgrade"`
-
 	ID        string `json:"id,omitempty"`
 	FullName  string `json:"full_name,omitempty"`
 	Email     string `json:"email,omitempty"`
@@ -68,13 +66,13 @@ type Token struct {
 }
 
 // NewToken from user and scopes
-func NewToken(user *database.User, client *database.APIClient) *Token {
+func NewToken(user *database.User, client *database.APIClient, requestedScopes []string) *Token {
 	now := time.Now()
 
 	scopes := []string{}
 
-	for _, scope := range client.Scopes {
-		if hasScope(user.Scopes, scope) || hasScope(user.Scopes, "admin") {
+	for _, scope := range requestedScopes {
+		if (hasScope(user.Scopes, scope) || hasScope(user.Scopes, "admin")) && hasScope(client.Scopes, scope) {
 			scopes = append(scopes, scope)
 		}
 	}
@@ -95,43 +93,6 @@ func NewToken(user *database.User, client *database.APIClient) *Token {
 
 		Scopes: scopes,
 	}
-}
-
-// NewUnverifiedToken is a token used when the authentication is not complete
-func NewUnverifiedToken(user *database.User, client *database.APIClient) *Token {
-	now := time.Now()
-
-	scopes := []string{}
-
-	for _, scope := range client.Scopes {
-		if hasScope(user.Scopes, scope) || hasScope(user.Scopes, "admin") {
-			scopes = append(scopes, scope)
-		}
-	}
-
-	return &Token{
-		Payload: jwt.Payload{
-			Issuer:         Issuer,
-			Subject:        user.ID,
-			Audience:       jwt.Audience{client.ID},
-			ExpirationTime: now.Add(24 * time.Hour).Unix(),
-			IssuedAt:       now.Unix(),
-		},
-
-		RequiresUpgrade: true,
-
-		Scopes: scopes,
-	}
-}
-
-// Upgrade an unverified token to a verified one
-func (t *Token) Upgrade(user *database.User) {
-	t.RequiresUpgrade = false
-
-	t.ID = user.ID
-	t.FullName = user.FullName
-	t.Email = user.Email
-	t.AvatarURL = user.AvatarURL
 }
 
 // Sign a token and return a JWT

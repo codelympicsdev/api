@@ -9,20 +9,6 @@ func InvalidCredentials(w http.ResponseWriter) {
 	w.Write([]byte(`{"error": "invalid_credentials"}`))
 }
 
-// TokenAlreadyUpgraded means that the supplied token is already upgraded
-func TokenAlreadyUpgraded(w http.ResponseWriter) {
-	w.WriteHeader(400)
-	w.Header().Add("Content-Type", "application/json")
-	w.Write([]byte(`{"error": "token_already_upgraded"}`))
-}
-
-// UnverifiedToken means that the supplied token is not verfied yet
-func UnverifiedToken(w http.ResponseWriter) {
-	w.WriteHeader(400)
-	w.Header().Add("Content-Type", "application/json")
-	w.Write([]byte(`{"error": "unverified_token"}`))
-}
-
 // UserDoesntExist means that the user doesnt exist
 func UserDoesntExist(w http.ResponseWriter) {
 	w.WriteHeader(400)
@@ -44,9 +30,16 @@ func MissingPermission(w http.ResponseWriter, scope string) {
 	w.Write([]byte(`{"error": "missing_permission", "scope": "` + scope + `"}`))
 }
 
-// InvalidAPIClient means that the supplied api client (credentials) are not correct
-func InvalidAPIClient(w http.ResponseWriter) {
+// APIClientDoesntExist means that the api client doesnt exist
+func APIClientDoesntExist(w http.ResponseWriter) {
 	w.WriteHeader(400)
 	w.Header().Add("Content-Type", "application/json")
-	w.Write([]byte(`{"error": "invalid_api_client"}`))
+	w.Write([]byte(`{"error": "api_client_doesnt_exist"}`))
+}
+
+// InvalidRootTrustClient means that the supplied root trust client (credentials) are not correct
+func InvalidRootTrustClient(w http.ResponseWriter) {
+	w.WriteHeader(400)
+	w.Header().Add("Content-Type", "application/json")
+	w.Write([]byte(`{"error": "invalid_root_trust_client"}`))
 }
