@@ -62,8 +62,8 @@ func generateAttemptResolve(p gql.ResolveParams) (interface{}, error) {
 		User:      token.Subject,
 		Challenge: c.ID,
 
-		Started: now,
-		Timeout: now.Add(c.Timeout),
+		CreationDate: now,
+		TimeoutDate:  now.Add(c.Timeout),
 
 		Input:          input,
 		ExpectedOutput: expectedOutput,
@@ -84,8 +84,8 @@ func generateAttemptResolve(p gql.ResolveParams) (interface{}, error) {
 			ResultsDate: c.ResultsDate,
 		},
 
-		Started: a.Started,
-		Timeout: a.Timeout,
+		CreationDate:   a.CreationDate,
+		SubmissionDate: a.TimeoutDate,
 
 		Input: &attemptInput{a.Input.Arguments, a.Input.Stdin},
 	}
@@ -127,15 +127,15 @@ func submitAttemptResolve(p gql.ResolveParams) (interface{}, error) {
 		return nil, ErrMissingPermissions
 	}
 
-	if a.Completed != (time.Time{}) || a.RecievedOutput != nil {
+	if a.SubmissionDate != (time.Time{}) || a.RecievedOutput != nil {
 		return nil, ErrDuplicate
 	}
 
-	if a.Timeout.Before(now) {
+	if a.TimeoutDate.Before(now) {
 		return nil, ErrTimedOut
 	}
 
-	a.Completed = now
+	a.SubmissionDate = now
 	a.RecievedOutput = &database.AttemptOutput{Stdout: stdout, Stderr: stderr}
 
 	err = a.Save()
@@ -163,9 +163,9 @@ func submitAttemptResolve(p gql.ResolveParams) (interface{}, error) {
 			ResultsDate: c.ResultsDate,
 		},
 
-		Started:   a.Started,
-		Timeout:   a.Timeout,
-		Completed: a.Completed,
+		CreationDate:   a.CreationDate,
+		TimeoutDate:    a.TimeoutDate,
+		SubmissionDate: a.SubmissionDate,
 
 		Input:          &attemptInput{a.Input.Arguments, a.Input.Stdin},
 		RecievedOutput: &attemptOutput{a.RecievedOutput.Stdout, a.RecievedOutput.Stderr},

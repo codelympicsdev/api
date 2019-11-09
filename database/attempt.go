@@ -14,9 +14,9 @@ type Attempt struct {
 	User      string `bson:"user"`
 	Challenge string `bson:"challenge"`
 
-	Started   time.Time `bson:"started"`
-	Timeout   time.Time `bson:"timeout"`
-	Completed time.Time `bson:"completed"`
+	CreationDate   time.Time `bson:"creation_date"`
+	TimeoutDate    time.Time `bson:"timeout_date"`
+	SubmissionDate time.Time `bson:"submission_date"`
 
 	Input          *AttemptInput  `bson:"input"`
 	ExpectedOutput *AttemptOutput `bson:"expected_output"`

@@ -15,9 +15,9 @@ type attempt struct {
 	User      string    `json:"user"`
 	Challenge Challenge `json:"challenge"`
 
-	Started   time.Time `json:"started"`
-	Timeout   time.Time `json:"timeout"`
-	Completed time.Time `json:"completed"`
+	CreationDate   time.Time `json:"creation_date"`
+	TimeoutDate    time.Time `json:"timeout_date"`
+	SubmissionDate time.Time `json:"submission_date"`
 
 	Input          *attemptInput  `json:"input"`
 	ExpectedOutput *attemptOutput `json:"expected_output"`
@@ -51,13 +51,13 @@ var attemptType = gql.NewObject(
 			"challenge": &gql.Field{
 				Type: challengeType,
 			},
-			"started": &gql.Field{
+			"creation_date": &gql.Field{
 				Type: gql.DateTime,
 			},
-			"timeout": &gql.Field{
+			"timeout_date": &gql.Field{
 				Type: gql.DateTime,
 			},
-			"completed": &gql.Field{
+			"submission_date": &gql.Field{
 				Type: gql.DateTime,
 			},
 			"input": &gql.Field{
@@ -141,9 +141,9 @@ func attemptResolve(p gql.ResolveParams) (interface{}, error) {
 			ResultsDate: c.ResultsDate,
 		},
 
-		Started:   a.Started,
-		Timeout:   a.Timeout,
-		Completed: a.Completed,
+		CreationDate:   a.CreationDate,
+		TimeoutDate:    a.TimeoutDate,
+		SubmissionDate: a.SubmissionDate,
 
 		Input: &attemptInput{a.Input.Arguments, a.Input.Stdin},
 	}
@@ -207,9 +207,9 @@ func attemptsByUserResolve(p gql.ResolveParams) (interface{}, error) {
 				ResultsDate: c.ResultsDate,
 			},
 
-			Started:   a.Started,
-			Timeout:   a.Timeout,
-			Completed: a.Completed,
+			CreationDate:   a.CreationDate,
+			TimeoutDate:    a.TimeoutDate,
+			SubmissionDate: a.SubmissionDate,
 
 			Input: &attemptInput{a.Input.Arguments, a.Input.Stdin},
 		}
