@@ -145,8 +145,11 @@ func attemptResolve(p gql.ResolveParams) (interface{}, error) {
 		Timeout:   a.Timeout,
 		Completed: a.Completed,
 
-		Input:          &attemptInput{a.Input.Arguments, a.Input.Stdin},
-		RecievedOutput: &attemptOutput{a.RecievedOutput.Stdout, a.RecievedOutput.Stderr},
+		Input: &attemptInput{a.Input.Arguments, a.Input.Stdin},
+	}
+
+	if a.RecievedOutput != nil {
+		resp.RecievedOutput = &attemptOutput{a.RecievedOutput.Stdout, a.RecievedOutput.Stderr}
 	}
 
 	if time.Now().After(c.ResultsDate) || token.HasScope("admin.attempts") {
@@ -208,8 +211,11 @@ func attemptsByUserResolve(p gql.ResolveParams) (interface{}, error) {
 			Timeout:   a.Timeout,
 			Completed: a.Completed,
 
-			Input:          &attemptInput{a.Input.Arguments, a.Input.Stdin},
-			RecievedOutput: &attemptOutput{a.RecievedOutput.Stdout, a.RecievedOutput.Stderr},
+			Input: &attemptInput{a.Input.Arguments, a.Input.Stdin},
+		}
+
+		if a.RecievedOutput != nil {
+			r.RecievedOutput = &attemptOutput{a.RecievedOutput.Stdout, a.RecievedOutput.Stderr}
 		}
 
 		if time.Now().After(c.ResultsDate) || token.HasScope("admin.attempts") {
