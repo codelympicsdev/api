@@ -17,7 +17,7 @@ type GetAPIClientResponse struct {
 	Name         string   `json:"name"`
 	Trusted      bool     `json:"trusted"`
 	Scopes       []string `json:"scopes"`
-	RedirectURLs string   `json:"redirect_urls"`
+	RedirectURLs []string `json:"redirect_urls"`
 	Secret       string   `json:"secret"`
 }
 

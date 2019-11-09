@@ -6,7 +6,7 @@ type APIClient struct {
 	Name         string   `bson:"name"`
 	Trusted      bool     `bson:"trusted"`
 	Scopes       []string `bson:"scopes"`
-	RedirectURLs string   `bson:"redirect_urls"`
+	RedirectURLs []string   `bson:"redirect_urls"`
 	Secret       string   `bson:"secret"`
 }
 
